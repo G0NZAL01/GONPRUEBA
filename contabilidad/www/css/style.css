@@ -33,6 +33,7 @@ h1 {
     padding: 10px;
     border-radius: 6px;
     background: #e9e9f9;
+    justify-content: center;
 }
 .acciones-datos button {
     padding: 10px 15px;

@@ -308,6 +308,10 @@ function exportarDatosAlternativo() {
                     margin: 15px 0;
                     color: #856404;
                 }
+                
+                .volver{
+                background-color: #dc3545;
+                }
                 .exito { 
                     background: #d4edda; 
                     border: 1px solid #c3e6cb; 
@@ -336,6 +340,11 @@ function exportarDatosAlternativo() {
                 <div class="botones">
                     <button class="copiar" onclick="copiarTexto()">📋 Copiar Texto</button>
                 </div>
+
+                <div class="botones">
+                    <button class="volver" onclick="window.location.href='./index.html'">Volver</button>
+                </div>
+                
                 
                 <pre id="datosJson">${datos}</pre>
                 
